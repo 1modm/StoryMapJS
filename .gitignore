@@ -9,4 +9,9 @@
 .DS_Store
 codekit-config.json
 
-build/website
+build
+robot_tests/logs
+s3analysis/mirror
+s3analysis/*csv
+
+env.sh

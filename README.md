@@ -14,7 +14,7 @@ For each language, we need a simple file with a name like `*xx*.js`, where *xx* 
 
 ##GigaPixel
 
-Images are rendered so when set to be map_as_image the entire image is shown. When set as cartography the zoom will set so that all the markers fit. 
+Images are rendered so when set to be map_as_image the entire image is shown. When set as cartography the zoom will set so that all the markers fit.
 
 Points are set to only display on mouseover in image mode, but you can set map_as_image to false in the config options to always show the points. The points are hidden when the intent is an image so that nothing obstructs the image the viewer is looking at. Looking at a painting is hard with a bunch of points on it.
 
@@ -48,24 +48,53 @@ If you don't use CodeKit, you must have Python installed. We use python 2.7.
 
 Clone our [fabfile](https://github.com/NUKnightLab/fablib) repository and place it in the same parent directory as your StoryMapJS respository.
 
-Install [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
+Install [virtualenv](https://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/), and [MongoDB](https://www.mongodb.org/).
+
+If you need to run the server, copy `env.sh.sample` to `env.sh` and, if necessary, modify any values in it. Execute this script with `source env.sh` when you are working on StoryMapJS, or otherwise arrange for these environment variables to be set. There are a number of environment variables which are critical to running the server which involve Amazon Web Services and Google Application credentials which we do not store in GitHub. If you are at Knight Lab, see a staff developer for these values. If you are outside of Knight Lab, you may not
 
     # Create a virtual environment
     mkvirtualenv storymapjs
-    
+
     # Activate the virtual environemnt
     workon storymapjs
-        
+
     # Install python requirements
     pip install -r requirements.txt
- 
+
+### Developing StoryMapJS - the javascript
+If you are interested in contributing to the development of the StoryMapJS javascript library, that is about it. When you make changes to the code, you should execute the `fab build` command. (Be sure you have activated the virtual environment.) To test your changes, run a simple local web server with `build` as the document root. You can test your local work by loading a URL like this (assuming your local server runs on port `8080`):
+
+	http://0.0.0.0:8080/embed/index.html?url=http://media.knightlab.com/StoryMapJS/demo/sochi.json
+
+You can change the URL to other examples. You can generally find the JSON for a StoryMap you've published by taking the StoryMap's direct URL and changing `index.html` to `published.json`.
+
+As you work, don't forget to run `fab build` each time you make changes. When time allows, we hope to make this automatic, but we haven't budgeted the time yet.
+
+### Developing StoryMapJS - the authoring environment
+
+StoryMapJS's authoring environment is rather more complex, and the instructions here are primarily directed at people who are directly involved with Knight Lab. The effort to make it easier for outside developers to contribute to this is higher than we can afford for the moment.  
+
+You must have MongoDB installed and running. You must copy the `env.sh.example` file to `env.sh` and edit the values accordingly. Specifically, there are a number of environment variables for access to outside services which do not belong in GitHub. Get those from a Knight Lab staff developer.
+
+Be sure to execute `env.sh` every time you want to run the StoryMapJS server. An easy way to do that is using the `virtualenvwrapper postactivate` hook.
+
+Once you've established the necessary environment variables, you should be able to...
+
     # Run the development server
     fab serve
 
-Files located in the `source` directory are assets for storymapjs itself.
+Files located in the `source` directory are assets for storymapjs itself. The core Flask app which controls the server is `api.py` which uses library code in the `storymap` directory. The pages you see are built from files in `templates`.
 
-Files located in the `website` directory are for the storymapjs website.
-
-Edit config.json as needed to modify the staging and deployment process.
-          
 At this time, edits to the HTML for the website are automatically visible when reloading the local server. Edits to CSS and JavaScript must be manually compiled before you'll see them.  Run `fab build`. This is something we'd like to make more automatic eventually.
+
+### A note about installing python requirements on Mac OS X 10.11 "El Capitan"
+Apparently, Apple removed support for `openssl` in Mac OS X 10.11. Here's the solution we've found.
+
+* `brew install openssl`
+* `CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pip install -r requirements.txt`
+
+
+## Troubleshooting
+
+Users may be directed to our userinfo page to help with troubleshooting. This page provides information about the user's account and saved storymaps. The endpoint is `https://storymap.knightlab.com/userinfo/`
+

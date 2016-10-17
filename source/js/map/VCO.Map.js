@@ -83,6 +83,7 @@ VCO.Map = VCO.Class.extend({
 			map_mini: 			false,
 			map_background_color: "#d9d9d9",
 			map_subdomains: 	"",
+			map_access_token:   "",
 			zoomify: {
 				path: 			"",
 				width: 			"",
@@ -106,7 +107,6 @@ VCO.Map = VCO.Class.extend({
 			line_join: 			"miter",
 			show_lines: 		true,
 			show_history_line: 	true,
-			use_custom_markers: false,
 			map_center_offset:  null // takes object {top:0,left:0}
 		};
 		

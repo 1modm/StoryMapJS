@@ -1,5 +1,6 @@
 from os.path import abspath, basename, dirname, join
 import sys
+import shutil
 from fabric.api import env
 
 #
@@ -26,3 +27,17 @@ add_paths(project_path, repos_path)
 # Import from fablib
 #
 from fablib import *
+
+@task
+def test(*args,**kwargs):
+    if os.path.isdir('robot_tests/logs'):
+        shutil.rmtree('robot_tests/logs')
+    os.execvp('robot', ('robot', '-d', 'robot_tests/logs') + args + ('robot_tests',))
+
+@task
+def prd(*args,**kwargs):
+    abort( "you should be deploying with git, not the prd task")
+
+@task
+def stg(*args,**kwargs):
+    abort( "you should be deploying with git, not the stg task")
